@@ -1,0 +1,6 @@
+REALM DOM.LAN
+KDC dc1.dom.lan
+KDC dc2.dom.lan
+ADMIN administrator
+NFS 1
+DNSLOOKUP 1
