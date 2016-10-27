@@ -1,0 +1,10 @@
+#
+# Copyright (c) 1992, 2011, Oracle and/or its affiliates. All rights reserved.
+#
+# Master map for automounter
+#
++auto_master
+/net		-hosts		-nosuid,nobrowse
+#/home		auto_home	-nobrowse
+/u		auto_home	-nosuid,sec=krb5p
+/nfs4		-fedfs		-ro,nosuid,nobrowse

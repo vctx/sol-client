@@ -78,17 +78,22 @@ svcadm restart name-service/switch
 svcadm restart /network/ldap/client
 
 # place some files into the right locations.
-#cat ./etc/pam.d/login > /etc/pam.d/login
-#cat ./etc/pam.d/other > /etc/pam.d/other
 cat ./etc/ssh/sshd_config > /etc/ssh/sshd_config
 cat ./etc/nfssec.conf > /etc/nfssec.conf
+cat ./etc/security/policy.conf > /etc/security/policy.conf
+cat ./etc/auto_master > /etc/auto_master
+cat ./etc/auto_home > /etc/auto_home
 
 # bounce some daemons
 svcadm restart ssh 
+svcadm restart autofs
 
 # join the samba domain
-smbadm join -u Administrator DOM.LAN
+#smbadm join -u Administrator DOM.LAN
 
 # defaults to /etc/profile
 echo 'export PATH=~/bin:/usr/sbin:$PATH' >> /etc/profile
 echo "export PS1='\u@\h:\W % '" >> /etc/profile
+echo "alias vi=vim" >> /etc/profile
+echo "alias tar=gtar" >> /etc/profile
+echo "alias sort=gsort" >> /etc/profile
