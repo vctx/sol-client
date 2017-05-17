@@ -12,6 +12,19 @@ function getBaseDN {
   if
 }
 
+# likewise make sure your ipf.conf permits following
+# permit these to the domain controllers:
+# 53 dns
+# 88 krb5 authentication
+# 464 krb5 change & set password (SET_CHANGE)
+# 749 krb5 change & set password (RPCSEC_GSS)
+# 389 ldap
+# 138 NetBIOS datagram
+# 137 NetBIOS nameservice
+# 139 SMB over NetBIOS
+# 445 SMB over TCP
+
+
 # make sure that the solaris client's ntp.conf is pointing at the domain controller for time.
 first, ntpdate -s thedomaincontroller
 then fix /etc/inet/ntp.conf to point at it and svcadm enable ntp
