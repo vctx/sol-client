@@ -2,6 +2,7 @@
 
 # tell nsswitch to get host resolution from dns though.
 svccfg -s dns/client setprop config/nameserver = net_address: '(192.168.8.8 192.168.8.9)'
+svccfg -s dns/client setprop config/domain = astring: '("dom.lan")'
 svccfg -s dns/client setprop config/search = astring: '("dom.lan")'
 svcadm enable dns/client
 svcadm enable system/name-service-cache
