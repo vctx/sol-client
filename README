@@ -1,0 +1,40 @@
+After digging through this, it seems that we need to modify kclient so that init will allow us to put
+the machine into the correct container.  I cp /usr/sbin/kclient to ~/bin/jkclient and fix it like:
+  * see the getBaseDN function, mine looks like
+function getBaseDN {
+  if [[ -n "$2" ]]
+  then
+    # this tries to put the machine account in CN=Computers,dc=dom,dc=lan....  it should be an argument...
+    # baseDN="CN=$1,$(dns2dn $2)"
+    baseDN = "ou=unix,ou=vctx,dc=dom,dc=lan"
+  else
+    baseDN="$(dns2dn $2)"
+  if
+}
+
+# make sure that the solaris client's ntp.conf is pointing at the domain controller for time.
+first, ntpdate -s thedomaincontroller
+then fix /etc/inet/ntp.conf to point at it and svcadm enable ntp
+# make sure that the solaris machine has a valid a record in dns..
+# 
+
+
+we can setup like:
+pkg install --accept system/security/kerberos-5 samba jdk-8 git mercurial gnu-tar
+svccfg -s dns/client setprop config/nameserver = net_address: '(10.211.55.25)'
+svccfg -s dns/client setprop config/domain = astring: '("dom.lan")'
+svccfg -s dns/client setprop config/search = astring: '("dom.lan")'
+svcadm enable dns/client
+svcadm enable system/name-service-cache
+svcadm refresh dns/client
+svcadm restart dns/client
+
+# get some packages.
+sharectl set -p ddns_enable=true smb
+./jkclient -R DOM.LAN -k 10.211.55.25 -a unixadm -T ms_ad -p ./profile.krb5 -s sshd-kbdint:optional
+
+# now to add a user.
+useradd -u1001 -gstaff -s/bin/bash -d/u/jubal -m jubal
+# set its password to something impossible.
+
+# now from your windows machine, you should be able to putty and it will use your cac credentials for login.
